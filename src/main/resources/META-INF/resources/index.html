@@ -1,0 +1,157 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Ask/Bid Live</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script type="application/javascript" src="https://cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vertx3-eventbus-client@3.8.5/vertx-eventbus.min.js"></script>
+    <style>
+        .bid {
+            padding:  10px 10px 10px 10px;
+            width: 200px;
+            color: #149014;
+        }
+
+        .ask {
+            color: #e83e8c;
+            width: 200px;
+            padding: 10px 10px 10px 10px;
+        }
+
+        .ask-item {
+            width: 200px;
+            height: 25px;
+            border: #e83e8c 1px solid;
+            text-align: right;
+            display: inline-block;
+        }
+
+        .bid-item {
+            width: 200px;
+            height: 30px;
+            padding: 5px 1px 1px 5px;
+            border: #149014 1px solid;
+        }
+
+        .price-container {
+            height: 350px;
+            width: 300px;
+            border: grey 1px solid;
+            vertical-align: bottom;
+            text-align: center;
+            align-items: flex-end;
+        }
+        .inner {
+            color: white;
+            width: 30%;
+            height: inherit;
+            display: flow;
+            text-align: left;
+        }
+        #ask_values .inner {
+            background-color: #e83e8c;
+        }
+
+        #bid_values .inner {
+            background-color: #149014;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Bid/Ask Live</h1>
+
+<span>Asks</span>
+<div class="price-container" style="vertical-align: bottom">
+    <div id="ask_values" class="ask">
+        <div id="ask-1" class="ask-item">
+            <div class="inner">123</div>
+        </div>
+        <div id="ask-2" class="ask-item">
+            <div class="inner"></div>
+        </div>
+        <div id="ask-3" class="ask-item">
+            <div class="inner"></div>
+        </div>
+        <div id="ask-4" class="ask-item">
+            <div class="inner"></div>
+        </div>
+        <div id="ask-5" class="ask-item">
+            <div class="inner"></div>
+        </div>
+        <div id="ask-6" class="ask-item"><div class="inner"></div></div>
+        <div id="ask-7" class="ask-item"><div class="inner"></div></div>
+        <div id="ask-8" class="ask-item"><div class="inner"></div></div>
+        <div id="ask-9" class="ask-item"><div class="inner"></div></div>
+        <div id="ask-10" class="ask-item"><div class="inner"></div></div>
+    </div>
+</div>
+
+<span>Bids</span>
+<div class="price-container" style="vertical-align: top">
+    <div id="bid_values" class="bid">
+        <div id="bid-1" class="bid-item"><div class="inner"></div></div>
+        <div id="bid-2" class="bid-item"><div class="inner"></div></div>
+        <div id="bid-3" class="bid-item"><div class="inner"></div></div>
+        <div id="bid-4" class="bid-item"><div class="inner"></div></div>
+        <div id="bid-5" class="bid-item"><div class="inner"></div></div>
+        <div id="bid-6" class="bid-item"><div class="inner"></div></div>
+        <div id="bid-7" class="bid-item"><div class="inner"></div></div>
+        <div id="bid-8" class="bid-item"><div class="inner"></div></div>
+        <div id="bid-9" class="bid-item"><div class="inner"></div></div>
+        <div id="bid-10" class="bid-item"><div class="inner"></div></div>
+    </div>
+</div>
+
+<span id="asks"></span>
+<span id="bids"></span>
+
+</body>
+<script>
+    var eb = new EventBus('/eventbus');
+
+    const divAsk = '<div class="ask-item">';
+    const divBid = '<div class="bid-item">';
+
+    eb.onopen = function () {
+        eb.registerHandler('ticks', function (error, message) {
+            var item = JSON.parse(message.body);
+            $("#ask").html(JSON.stringify(item.asks));
+            $("#bid").html(JSON.stringify(item.bids));
+            fillAsks(item);
+            fillBids(item);
+        });
+    }
+
+    function fillAsks(item){
+        var indexAsk = 1;
+        for (const ask of item.asks) {
+            $("#ask-" + indexAsk+ " .inner").html(ask.price);
+            $("#ask-" + indexAsk).show();
+            indexAsk = indexAsk + 1;
+        }
+
+        for (let i = indexAsk; i < 11; i++) {
+            $("#ask-" + indexAsk + " .inner").html('');
+            $("#ask-" + indexAsk).hide();
+        }
+    }
+
+    function fillBids(item){
+        var index = 1;
+        for (const bid of item.bids) {
+            $("#bid-" + index + " .inner").html(bid.price);
+            $("#bid-" + index).show();
+            index = index + 1;
+        }
+
+        for (let i = index; i < 11; i++) {
+            $("#bid-" + index + " .inner").html('');
+            $("#bid-" + index).hide();
+        }
+    }
+
+</script>
+</html>
