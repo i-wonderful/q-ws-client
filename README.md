@@ -6,7 +6,7 @@
 Открывать по дефолтному адресу
 http://localhost:8080 
 
-##Способы запуска:
+#Способы запуска:
 #### сразу из консоли
 ```shell script
 ./mvnw compile quarkus:dev
@@ -29,6 +29,9 @@ java -jar quarkus-run.jar
 cd ./target
 java -jar q-ws-client-1.0.0-SNAPSHOT-runner.jar
 ```
+
+#### Можно собрать докер
+См подробности в src/main/docker
 
 ## Todo list:
 - перейти на сокет vertx
